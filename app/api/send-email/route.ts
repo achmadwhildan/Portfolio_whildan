@@ -1,10 +1,17 @@
 import { Resend } from "resend"
 import { NextRequest, NextResponse } from "next/server"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(request: NextRequest) {
     try {
+        if (!process.env.RESEND_API_KEY) {
+            return NextResponse.json(
+                { error: "RESEND_API_KEY not set" },
+                { status: 500 }
+            )
+        }
+
+        const resend = new Resend(process.env.RESEND_API_KEY)
+
         const { name, email, message } = await request.json()
 
         if (!name || !email || !message) {
@@ -21,15 +28,10 @@ export async function POST(request: NextRequest) {
             subject: `New Contact Form Submission from ${name}`,
             html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">New Contact Form Submission</h2>
+          <h2>New Contact Form Submission</h2>
           <p><strong>Name:</strong> ${name}</p>
           <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong></p>
-          <p style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; white-space: pre-wrap;">
-            ${message}
-          </p>
-          <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
-          <p style="font-size: 12px; color: #999;">This email was sent from your portfolio contact form.</p>
+          <p>${message}</p>
         </div>
       `,
         })
@@ -42,7 +44,7 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json(
-            { success: true, message: "Email sent successfully" },
+            { success: true },
             { status: 200 }
         )
     } catch (error) {
