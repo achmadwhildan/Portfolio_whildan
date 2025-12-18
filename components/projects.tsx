@@ -48,7 +48,7 @@ export function Projects() {
     {
       title: "Aplikasi Tiket",
       description: "A mobile ticketing application that helps users book, manage, and view ticket information easily through a simple and intuitive interface.",
-      image: "/tiket.png",
+      image: "/ticket-app.png",
       tags: ["Flutter"],
       demoLink: "#",
       githubLink: "#",
